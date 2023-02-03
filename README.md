@@ -52,3 +52,4 @@
     - [playfab sdk](https://learn.microsoft.com/ko-kr/gaming/playfab/sdks/unity3d/installing-unity3d-sdk)
     - [Debug Console](https://assetstore.unity.com/packages/tools/gui/in-game-debug-console-68068)
 
+세팅 시 meta file도 같이 옮겨야 한다.
