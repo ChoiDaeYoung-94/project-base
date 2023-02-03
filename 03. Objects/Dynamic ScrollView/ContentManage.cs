@@ -35,9 +35,9 @@ public class ContentManage : MonoBehaviour
 
     [Header("--- 참고용 [ Content ] ---")]
     [SerializeField, Tooltip("최소 생성 itemList")]
-    LinkedList<DY.Level> _LL_items = new LinkedList<DY.Level>();
+    LinkedList<AD.Level> _LL_items = new LinkedList<AD.Level>();
     [SerializeField, Tooltip("비활성 itemList")]
-    LinkedList<DY.Level> _LL_enabledItems = new LinkedList<DY.Level>();
+    LinkedList<AD.Level> _LL_enabledItems = new LinkedList<AD.Level>();
     [Header("--- 참고용 [ Content ] ---")]
     [SerializeField, Tooltip("Content의 PosY 변화 계산 위함")]
     float _curPosY = 0;
@@ -163,7 +163,7 @@ public class ContentManage : MonoBehaviour
             GameObject item = Instantiate(_go_item, _RTR_content);
             item.SetActive(true);
 
-            DY.Level level_item = item.GetComponent<DY.Level>();
+            AD.Level level_item = item.GetComponent<AD.Level>();
             level_item.SetLevel(i + 1);
 
             _LL_items.AddLast(level_item);
@@ -250,7 +250,7 @@ public class ContentManage : MonoBehaviour
         if (_endIndex + 1 > _amount)
             return;
 
-        foreach (DY.Level item in _LL_items)
+        foreach (AD.Level item in _LL_items)
         {
             if (item._RTR_this.anchoredPosition.y - _intervalHeight >= -_RTR_content.anchoredPosition.y)
             {
@@ -264,10 +264,10 @@ public class ContentManage : MonoBehaviour
         // 비활성화 한 item들을 _LL_items에서 지운 뒤 위치 조절 후 활성화
         if (_LL_enabledItems != null && _LL_enabledItems.Count > 0)
         {
-            foreach (DY.Level item in _LL_enabledItems)
+            foreach (AD.Level item in _LL_enabledItems)
                 _LL_items.Remove(item);
 
-            foreach (DY.Level item in _LL_enabledItems)
+            foreach (AD.Level item in _LL_enabledItems)
             {
                 if (_endIndex + 1 <= _amount)
                 {
@@ -293,7 +293,7 @@ public class ContentManage : MonoBehaviour
                     break;
             }
 
-            foreach (DY.Level item in _LL_items)
+            foreach (AD.Level item in _LL_items)
                 _LL_enabledItems.Remove(item);
         }
 
@@ -334,7 +334,7 @@ public class ContentManage : MonoBehaviour
                     _endAnchorX_index = i;
 
             int x = _GLG_content.constraintCount;
-            foreach (DY.Level item in _LL_enabledItems)
+            foreach (AD.Level item in _LL_enabledItems)
             {
                 if (--x >= 0)
                 {
@@ -348,7 +348,7 @@ public class ContentManage : MonoBehaviour
                 }
             }
 
-            foreach (DY.Level item in _LL_items)
+            foreach (AD.Level item in _LL_items)
                 _LL_enabledItems.Remove(item);
         }
     }
