@@ -6,6 +6,9 @@ using UnityEngine;
 
 namespace AD
 {
+    /// <summary>
+    /// Manager 스크립트 관리
+    /// </summary>
     public class Managers : MonoBehaviour
     {
         /// <summary>
@@ -36,6 +39,9 @@ namespace AD
         UpdateManager _updateM = new UpdateManager();
         public static UpdateManager UpdateM { get { return instance._updateM; } }
 
+        GameManager _gameM = new GameManager();
+        public static GameManager GameM { get { return instance._gameM; } }
+
         private void Awake()
         {
             Init();
@@ -43,23 +49,11 @@ namespace AD
 
         void Init()
         {
-            if (instance == null)
-            {
-                GameObject go = GameObject.Find("Manager");
-                if (go == null)
-                {
-                    go = new GameObject { name = "Manager" };
-                    go.AddComponent<Managers>();
-                }
-
-                DontDestroyOnLoad(go);
-                instance = go.GetComponent<Managers>();
+            instance = this;
+            DontDestroyOnLoad(this);
 
                 InitM();
             }
-            else
-                Destroy(gameObject);
-        }
 
         private void OnDestroy()
         {

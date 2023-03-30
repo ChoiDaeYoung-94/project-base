@@ -7,6 +7,9 @@ using PlayFab.ClientModels;
 
 namespace AD
 {
+    /// <summary>
+    /// 사용하는 Data 관리
+    /// </summary>
     public class DataManager
     {
         [Header("--- Dictionary 데이터 ---")]
@@ -17,10 +20,10 @@ namespace AD
 
         [Header("--- 참고용 ---")]
         [Tooltip("현재 Player가 PlayFab에 접속한 ID")]
-        string _str_ID = string.Empty;
+        private string _str_ID = string.Empty;
         public string StrID { get { return _str_ID; } set { _str_ID = value; } }
         [Tooltip("현재 Player가 설정한 NickName")]
-        string _str_NickName = string.Empty;
+        private string _str_NickName = string.Empty;
         public string StrNickName { get { return _str_NickName; } set { _str_NickName = value; } }
         public int Ply_gold { get; set; }
         public int Ply_level { get; set; }
@@ -38,12 +41,12 @@ namespace AD
         /// </summary>
         public void Init()
         {
-            this._dic_player = new Dictionary<string, string>();
+            _dic_player = new Dictionary<string, string>();
 
             string getPlayer = Managers.ResourceM.Load<TextAsset>("DataManager", "Data/Player").ToString();
             Dictionary<string, object> dic_temp = Utils.JsonToObject(getPlayer) as Dictionary<string, object>;
             foreach (KeyValuePair<string, object> content in dic_temp)
-                this._dic_player.Add(content.Key, content.Value.ToString());
+                _dic_player.Add(content.Key, content.Value.ToString());
         }
 
         #region Functions
@@ -65,7 +68,7 @@ namespace AD
         /// </summary>
         internal void CheckBasicData()
         {
-            if (this._dic_PlayFabPlayerData == null || this._dic_PlayFabPlayerData.Count < this._dic_player.Count)
+            if (_dic_PlayFabPlayerData == null || _dic_PlayFabPlayerData.Count < _dic_player.Count)
                 AD.Managers.ServerM.SetBasicData();
             else
                 SetPlayerData();
@@ -76,17 +79,17 @@ namespace AD
         /// </summary>
         void SetPlayerData()
         {
-            if (string.IsNullOrEmpty(this.StrNickName))
-                this.StrNickName = this._dic_PlayFabPlayerData["NickName"].Value;
+            if (string.IsNullOrEmpty(StrNickName))
+                StrNickName = _dic_PlayFabPlayerData["NickName"].Value;
             else
-                Managers.ServerM.SetData(new Dictionary<string, string> { { "NickName", this.StrNickName } });
+                AD.Managers.ServerM.SetData(new Dictionary<string, string> { { "NickName", StrNickName } });
 
-            this.Ply_gold = int.Parse(_dic_PlayFabPlayerData["Gold"].Value);
-            this.Ply_level = int.Parse(_dic_PlayFabPlayerData["Level"].Value);
-            this.Ply_experience = long.Parse(_dic_PlayFabPlayerData["Experience"].Value);
-            this.Ply_power = float.Parse(_dic_PlayFabPlayerData["Power"].Value);
-            this.Ply_attackSpeed = float.Parse(_dic_PlayFabPlayerData["AttackSpeed"].Value);
-            this.Ply_maxCount = int.Parse(_dic_PlayFabPlayerData["MaxCount"].Value);
+            Ply_gold = int.Parse(_dic_PlayFabPlayerData["Gold"].Value);
+            Ply_level = int.Parse(_dic_PlayFabPlayerData["Level"].Value);
+            Ply_experience = long.Parse(_dic_PlayFabPlayerData["Experience"].Value);
+            Ply_power = float.Parse(_dic_PlayFabPlayerData["Power"].Value);
+            Ply_attackSpeed = float.Parse(_dic_PlayFabPlayerData["AttackSpeed"].Value);
+            Ply_maxCount = int.Parse(_dic_PlayFabPlayerData["MaxCount"].Value);
 
             _isFinished = true;
         }
