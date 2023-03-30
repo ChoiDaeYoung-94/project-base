@@ -4,20 +4,26 @@ using UnityEngine;
 
 namespace AD
 {
+    /// <summary>
+    /// Scene 관리
+    /// </summary>
     public class SceneManager : MonoBehaviour
     {
-        string _str_sceneName = string.Empty;
+        AD.Define.Scenes _scene;
         Coroutine _co_GoScene = null;
 
         float progress = 0f;
-        public float Progress { get { return progress; } } 
+        public float Progress { get { return progress; } }
 
-        public void NextScene(string sceneName)
+        public void NextScene(AD.Define.Scenes scene)
         {
-            this._str_sceneName = sceneName;
-            UnityEngine.SceneManagement.SceneManager.LoadScene("NextScene");
+            _scene = scene;
+            UnityEngine.SceneManagement.SceneManager.LoadScene(AD.Define.Scenes.NextScene.ToString());
         }
 
+        /// <summary>
+        /// NextScene씬에 도달 후 호출
+        /// </summary>
         public void GoScene()
         {
             _co_GoScene = StartCoroutine(Co_GoScene());
@@ -25,12 +31,12 @@ namespace AD
 
         IEnumerator Co_GoScene()
         {
-            AsyncOperation ao = UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(this._str_sceneName);
+            AsyncOperation ao = UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(_scene.ToString());
 
             while (!ao.isDone)
             {
                 AD.Debug.Log("SceneManager", $"{ao.progress} - progress");
-                this.progress = ao.progress;
+                progress = ao.progress;
                 yield return null;
             }
 
@@ -38,8 +44,6 @@ namespace AD
             {
                 StopCoroutine(_co_GoScene);
                 _co_GoScene = null;
-
-                this._str_sceneName = string.Empty;
 
                 Resources.UnloadUnusedAssets();
             }
