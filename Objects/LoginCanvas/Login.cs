@@ -39,6 +39,7 @@ public class Login : MonoBehaviour
     GameObject _go_WarningNAE = null;
 
     [Header("--- 참고용 ---")]
+    Coroutine _co_SaveData = null;
     Coroutine _co_Login = null;
 
     private void Awake()
@@ -224,14 +225,16 @@ public class Login : MonoBehaviour
             _go_WarningRule.SetActive(false);
             _go_WarningNAE.SetActive(false);
 
-            AD.Managers.DataM.StrNickName = name;
+            AD.Managers.ServerM.SetData(new Dictionary<string, string> { { "NickName", name } }, GetAllData: false, Update: false);
 
-            GoNext();
+            _TMP_load.text = "Save NickName...";
+
+            _co_SaveData = StartCoroutine(SaveNickName());
         },
         error =>
         {
             //Debug.LogError(error.GenerateErrorReport());
-            this._go_WarningNAE.SetActive(true);
+            _go_WarningNAE.SetActive(true);
         });
     }
     #endregion
@@ -239,7 +242,7 @@ public class Login : MonoBehaviour
     #region LoginWithTestAccount
     void LoginWithTestAccount()
     {
-        var request = new LoginWithEmailAddressRequest { Email = "Test@AeDeong.com", Password = "TestAccount" };
+        var request = new LoginWithEmailAddressRequest { Email = "testAccount@AeDeong.com", Password = "TestAccount" };
         PlayFabClientAPI.LoginWithEmailAddress(request,
             (success) =>
             {
@@ -251,30 +254,49 @@ public class Login : MonoBehaviour
 
     void SignUpWithTestAccount()
     {
-        var request = new RegisterPlayFabUserRequest { Email = "Test@AeDeong.com", Password = "TestAccount", RequireBothUsernameAndEmail = false };
+        var request = new RegisterPlayFabUserRequest { Email = "testAccount@AeDeong.com", Password = "TestAccount", RequireBothUsernameAndEmail = false };
         PlayFabClientAPI.RegisterPlayFabUser(request,
             (success) =>
             {
                 AD.Managers.DataM.StrID = success.PlayFabId;
-                UpdateDisplayName("TestAccount");
+                UpdateDisplayName("testAccount");
             },
             (failed) => Debug.Log("Failed SignUpWithTestAccount  " + failed.ErrorMessage));
     }
     #endregion
 
     #region ETC
+    IEnumerator SaveNickName()
+    {
+        while (AD.Managers.ServerM.isInprogress)
+            yield return null;
+
+        StopSaveNickNameCoroutine();
+    }
+
+    void StopSaveNickNameCoroutine()
+    {
+        if (_co_SaveData != null)
+        {
+            StopCoroutine(_co_SaveData);
+            _co_SaveData = null;
+
+            GoNext();
+        }
+    }
+
     void GoNext()
     {
         _TMP_load.text = "Check Data...";
 
-        AD.Managers.DataM.InitPlayerData();
+        AD.Managers.DataM.UpdatePlayerData();
 
         _co_Login = StartCoroutine(InitPlayerData());
     }
 
     IEnumerator InitPlayerData()
     {
-        while (!AD.Managers.DataM.IsFinished)
+        while (AD.Managers.ServerM.isInprogress)
             yield return null;
 
         StopInitPlayerDataCoroutine();
@@ -287,7 +309,10 @@ public class Login : MonoBehaviour
             StopCoroutine(_co_Login);
             _co_Login = null;
 
-            AD.Managers.SceneM.NextScene("Main");
+            if (!AD.Managers.DataM._dic_player["Sex"].Equals("null"))
+                AD.Managers.SceneM.NextScene(AD.Define.Scenes.Main);
+            else
+                AD.Managers.SceneM.NextScene(AD.Define.Scenes.SetCharacter);
         }
     }
     #endregion
