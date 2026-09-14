@@ -1,55 +1,51 @@
-# About
+# Project Base
 
-개인 게임 프로젝트를 시작할 때 초기 세팅을 편하게 하기 위한 Assets을 관리하는 저장소
+> 개인 Unity 게임 프로젝트의 초기 설정에 재사용하는 씬·스크립트·프리팹 모음입니다.
 
-## About directory files
+새 프로젝트마다 반복하는 기본 구성을 모아 두었습니다. **전체 Unity 프로젝트가 아닌 에셋 모음**으로, 사용할 프로젝트의 `Assets` 폴더에 필요한 파일을 옮겨 적용합니다.
 
-### Scenes
+## 폴더 구성
 
-게임 프로젝트에서 사용하는 기본 scene을 관리한다.  
-각 scene에는 기본적으로 필요한 스크립트나 프리팹이 이미 배치되어 있다.  
-해당 폴더는 게임 프로젝트의 Assets 아래 위치한다.
+| 폴더 | 내용 | 적용 위치 |
+| --- | --- | --- |
+| [Scenes](Scenes) | 기본 스크립트와 프리팹이 배치된 씬 | `Assets/Scenes` |
+| [Scripts/AD_Library](Scripts/AD_Library) | 공통 기능과 확장용 유틸리티 | `Assets/Scripts/AD_Library` |
+| [Scripts/Managers](Scripts/Managers) | 데이터·리소스·씬·사운드·풀·팝업 등 관리 코드 | `Assets/Scripts/Managers` |
+| [Objects](Objects) | 로그인, 로딩, 조이스틱, 스크롤 뷰 등 프리팹 | `Assets/Objects` |
+| [ETC](ETC) | Android 언어별 앱 이름 리소스 등 | 내부 경로에 맞게 배치 |
 
-- Test
-  - Test.unity
-  - 작업 테스트 시 사용하는 scene
-- Game.unity
-  - Ingame scene
-- Login.unity
-  - Playfab, Google login scene
-- Main.unity
-  - Login scene에서 login 이후 Game scene 들어가기 전 scene
-- NextScene.unity
-  - scene 전환 시 사용하는 scene
+### 기본 씬
 
-### Scripts
+| 씬 | 용도 |
+| --- | --- |
+| [Login.unity](Scenes/Login.unity) | PlayFab·Google 로그인 |
+| [Main.unity](Scenes/Main.unity) | 로그인 이후 게임 진입 전 화면 |
+| [Game.unity](Scenes/Game.unity) | 인게임 |
+| [NextScene.unity](Scenes/NextScene.unity) | 씬 전환 |
+| [Test.unity](Scenes/Test/Test.unity) | 기능 테스트 |
 
-게임 프로젝트에서 사용하는 기본 script를 관리한다.  
-해당 폴더는 게임 프로젝트의 Assets 아래 위치한다.
+## 프로젝트에 적용하기
 
-- DY_Library
-  - 작업 시 바로 사용 및 확장이 가능한 스크립트가 존재한다.
-  - 해당 폴더의 readme.txt에 간략한 설명이 있다.
-- Managers
-  - 매니저 역할을 하는 스크립트가 존재한다.
-  - 해당 폴더의 readme.txt에 간략한 설명이 있다.
+1. 저장소를 복제합니다.
 
-### Objects
+   ```bash
+   git clone https://github.com/ChoiDaeYoung-94/project-base.git
+   ```
 
-게임 프로젝트에서 바로 사용 가능한 Prefab을 관리한다.  
+2. `Scenes`, `Scripts`, `Objects` 폴더를 사용할 Unity 프로젝트의 `Assets` 아래에 배치합니다.
+3. `ETC`의 파일은 내부 경로에 맞춰 옮깁니다. 예를 들어 `ETC/Plugins/Android/res`는 `Assets/Plugins/Android/res`에 배치합니다.
+4. 필요한 외부 라이브러리를 추가하고, 사용하는 로그인·광고·결제 기능의 설정을 프로젝트에 맞게 조정합니다.
 
-### ETC
+**파일을 옮길 때는 함께 제공된 `.meta` 파일도 복사합니다.** 씬과 프리팹의 참조를 유지하는 데 필요합니다.
 
-이미 지정이 되어있는 폴더나 위 폴더에 속하지 않는 내용들을 관리한다.  
-해당 폴더의 readme.txt에 간략한 설명이 있다.
+## 외부 의존성
 
-## Project settings
+기존 설정 안내에서 별도 추가 대상으로 명시한 라이브러리입니다.
 
-1. 본 repo의 Scenes, Scripts, Objects 폴더를 Assets 폴더 아래에 위치한다.
-2. ETC 폴더의 경우 ETC 안의 폴더들의 이름이 경로이며 그에 맞게 위치한다.
-3. 본 프로젝트에 포함되지 않지만 필요한 내용들을 따로 추가해야 한다.
-    - [MiniJSON.cs](https://gist.github.com/darktable/1411710)
-    - [playfab sdk](https://learn.microsoft.com/ko-kr/gaming/playfab/sdks/unity3d/installing-unity3d-sdk)
-    - [Debug Console](https://assetstore.unity.com/packages/tools/gui/in-game-debug-console-68068)
+- [MiniJSON.cs](https://gist.github.com/darktable/1411710)
+- [PlayFab SDK](https://learn.microsoft.com/ko-kr/gaming/playfab/sdks/unity3d/installing-unity3d-sdk)
+- [In-game Debug Console](https://assetstore.unity.com/packages/tools/gui/in-game-debug-console-68068)
 
-세팅 시 meta file도 같이 옮겨야 한다.
+로그인·광고·결제 관련 매니저를 사용할 경우 해당 SDK와 서비스 설정도 필요합니다. 이 저장소에는 Unity 버전을 지정하는 `ProjectSettings`가 없으므로, 적용할 프로젝트에서 의존성과 호환성을 확인합니다.
+
+프리팹별 설명은 [Objects/readme.txt](Objects/readme.txt)와 각 하위 폴더의 `readme.txt`를 참고합니다.
